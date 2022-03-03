@@ -36,6 +36,10 @@ dependencies {
     // ARCore (Google Play Services for AR) library.
     implementation 'com.google.ar:core:1.29.0'
 
+    // 3D and ARCore
+//    implementation 'io.github.sceneview:arsceneview:0.0.3'
+    implementation "com.gorisse.thomas.sceneform:sceneform:1.20.5"
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
