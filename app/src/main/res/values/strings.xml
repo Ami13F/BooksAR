@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Books AR</string>
+    <string name="fabDescription">Point</string>
 </resources>

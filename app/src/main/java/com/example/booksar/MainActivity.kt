@@ -1,36 +1,28 @@
 package com.example.booksar
 
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import com.example.booksar.helpers.CameraPermissionHelper
-import com.example.booksar.models.Book
+import androidx.appcompat.app.AppCompatActivity
+import com.example.booksar.core.BookArService
+import com.google.ar.sceneform.ux.ArFragment
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var mainFragment: ArFragment
+    private lateinit var bookArService : BookArService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        checkCameraPermissions()
-    }
+        mainFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
+        bookArService = BookArService(this, mainFragment)
 
-    private fun checkCameraPermissions() {
-        // The app must have been given the CAMERA permission. If we don't have it yet, request it.
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            CameraPermissionHelper.requestCameraPermission(this)
+        mainFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            Toast.makeText(this.baseContext, "pressed", Toast.LENGTH_SHORT).show()
+            bookArService.createObject(Uri.parse("models/book_small.glb"))
         }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        results: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, results)
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            Toast.makeText(this, "This application needs camera permissions", Toast.LENGTH_LONG)
-                .show()
-            finish()
-        }
     }
 }
