@@ -1,18 +1,23 @@
 package com.example.booksar.core
 
-import android.app.AlertDialog
-import android.graphics.Color
 import android.net.Uri
 import com.example.booksar.MainActivity
+import com.example.booksar.R
+import com.example.booksar.helpers.CoverHelper.Companion.createCoverFromImage
+import com.example.booksar.helpers.CoverHelper.Companion.createTemplateViewCover
+import com.example.booksar.helpers.ExceptionHelper.Companion.onException
 import com.example.booksar.models.Book
+import com.example.booksar.models.BookCover
 import com.google.ar.core.Anchor
+import com.google.ar.core.Config
 import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.rendering.RenderableInstance
+import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import java.util.concurrent.CompletableFuture
@@ -23,6 +28,7 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
     private var hitPose: Pose? = null
 
     fun createObject(bookUrl: Uri) {
+        disableLight()
         val frame = fragment.arSceneView.arFrame
         val point = ArScreen.getScreenCenter(activity)
         if (frame != null) {
@@ -37,7 +43,16 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
         }
     }
 
-    fun createBookObject(bookUrl: Uri): CompletableFuture<ModelRenderable> {
+    private fun disableLight() {
+        fragment.arSceneView.session?.apply {
+            // Configure the session with the Lighting Estimation API in ENVIRONMENTAL_HDR mode.
+            val configLight = config
+            configLight.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
+            configure(config)
+        }
+    }
+
+    private fun createBookObject(bookUrl: Uri): CompletableFuture<ModelRenderable> {
         return ModelRenderable.builder()
             .setSource(fragment.context, bookUrl)
             .setIsFilamentGltf(true)
@@ -48,23 +63,22 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
         createBookObject(bookUrl)
             .thenAccept {
                 //TODO:replace with book from api
-                val book = Book(
-                    500,
-                    "",
-                    size = Vector3(10.14903799f, 10.038000144f, 0.2450379f),
-                    position = Vector3(hitPose!!.qx(), hitPose!!.qy(), hitPose!!.qy()),
-                    rotation = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f)
-                )
+                val book = createBook(false)
                 addObjectToScene(fragment, createAnchor, book, it)
             }
             .exceptionally {
-                val builder = AlertDialog.Builder(activity)
-                builder.setMessage(it.message)
-                    .setTitle("Error!")
-                builder.create().show()
-
-                return@exceptionally null
+                return@exceptionally onException(activity, it)
             }
+    }
+
+    private fun createBook(isTemplate: Boolean = true): Book {
+        return Book(
+            500,
+            size = Vector3(10.14903799f, 10.038000144f, 0.2450379f),
+            position = Vector3(hitPose!!.qx(), hitPose!!.qy(), hitPose!!.qy()),
+            rotation = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f),
+            cover = BookCover().apply { NeedDefaultCover = isTemplate }
+        )
     }
 
     private fun scaleObject(book: Book, bookNode: TransformableNode): TransformableNode {
@@ -83,44 +97,6 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
         return bookNode
     }
 
-    private fun paintBook(
-        node: TransformableNode,
-        render: RenderableInstance,
-    ): TransformableNode {
-        val backgroundColor = com.google.ar.sceneform.rendering.Color(Color.GREEN)
-        val blue  = com.google.ar.sceneform.rendering.Color(Color.BLUE)
-
-        val materialInstances = render.filamentAsset!!.materialInstances
-        for (materialInstance in materialInstances) {
-            when (materialInstance.name) {
-                "pages_pages_diffuse.tga" -> {
-                    materialInstance.setParameter(
-                        "baseColorFactor",
-                        255f,255f,255f  //white
-                    )
-                }
-                "binding_binding_diffuse.tga" -> {
-                    materialInstance.setParameter(
-                        "baseColorFactor",
-                        backgroundColor.r,
-                        backgroundColor.g,
-                        backgroundColor.b
-                    )
-                }
-                "cover_cover_diffuse.tga" -> {
-                    materialInstance.setParameter(
-                        "baseColorFactor",
-                        blue.r,
-                        blue.g,
-                        blue.b
-                    )
-                }
-            }
-        }
-
-        return node
-    }
-
     private fun addObjectToScene(
         fragment: ArFragment,
         anchor: Anchor,
@@ -130,13 +106,47 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
         val anchorNode = AnchorNode(anchor)
         anchorNode.parent = fragment.arSceneView.scene
 
-        var bookNode = TransformableNode(fragment.transformationSystem)
+        val bookNode = TransformableNode(fragment.transformationSystem)
         bookNode.parent = anchorNode
 
-        val render = bookNode.setRenderable(model)
+        bookNode.renderable = model
         scaleObject(book, bookNode)
-        paintBook(bookNode, render)
+        addCover(book, bookNode)
 
         bookNode.select()
+    }
+
+    private fun addCover(book: Book, bookNode: Node) {
+        loadViewForCover(book, bookNode)
+//        paintBook(bookNode, book.coverColor) //book.cover.spineColor
+    }
+
+    private fun loadViewForCover(book: Book, bookNode: Node) {
+        val coverNode = Node()
+
+        if (book.cover.NeedDefaultCover)
+            ViewRenderable.builder().setView(fragment.context, R.layout.book_template).build()
+                .thenAccept { viewRenderable ->
+                    createTemplateViewCover(
+                        viewRenderable,
+                        coverNode,
+                        bookNode,
+                        book
+                    )
+                }
+                .exceptionally {
+                    return@exceptionally onException(activity, it)
+                }
+        else ViewRenderable.builder().setView(fragment.context, R.layout.image_cover).build()
+            .thenAccept { viewRenderable ->
+                createCoverFromImage(
+                    book, coverNode, bookNode, viewRenderable
+                )
+            }
+            .exceptionally {
+                return@exceptionally onException(activity, it)
+            }
+
+        coverNode.parent = bookNode
     }
 }
