@@ -57,6 +57,10 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
                     javaClass.simpleName + " text changed " + searchBar.text
                 )
                 Toast.makeText(activity, "Search: ${searchBar.text}", Toast.LENGTH_SHORT).show()
+                adapter.filterList(data
+                    .filter { it.author.contains(searchBar.text)
+                            || it.title.contains(searchBar.text)}
+                    .toList())
             }
 
             override fun afterTextChanged(editable: Editable) {}

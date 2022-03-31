@@ -57,7 +57,6 @@ class CoverHelper {
                             Color.green(coverColor).toFloat() / 255f,
                             Color.blue(coverColor).toFloat() / 255f,
                             Color.alpha(coverColor).toFloat() / 255f,
-//                            Color.alpha(coverColor).toFloat() / 200f,
                         )
                     }
                 }

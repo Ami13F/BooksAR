@@ -11,13 +11,20 @@ import com.example.booksar.models.Book
 import com.squareup.picasso.Picasso
 
 
-class BooksAdapter(private val booksList: List<Book>) :
+class BooksAdapter(private var booksList: List<Book>) :
     RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.book_list, parent, false)
 
         return ViewHolder(view)
+    }
+
+    // method for filtering our recyclerview items.
+    fun filterList(filterBooks: List<Book>) {
+        booksList = filterBooks
+
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
