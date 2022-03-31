@@ -32,6 +32,14 @@ android {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/com.github.mancj/MaterialSearchBar
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
+
+    // for adding recyclerview
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+    // for adding cardview
+    implementation 'androidx.cardview:cardview:1.0.0'
 
     // ARCore (Google Play Services for AR) library.
     implementation 'com.google.ar:core:1.30.0'
