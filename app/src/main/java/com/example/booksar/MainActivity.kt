@@ -3,12 +3,14 @@ package com.example.booksar
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.booksar.core.BookArFragment
 import com.example.booksar.core.BookArService
+import com.example.booksar.web.HtmlExtractorService
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val searchBtn = findViewById<FloatingActionButton>(R.id.searchBookBtn)
-        searchBtn.setOnClickListener{
+        searchBtn.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
     }

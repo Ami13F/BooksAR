@@ -1,19 +1,22 @@
 package com.example.booksar
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.booksar.core.BooksAdapter
 import com.example.booksar.models.Book
+import com.example.booksar.web.HtmlExtractorService
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlin.random.Random
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionListener {
@@ -25,6 +28,7 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
 
     lateinit var searchBar: MaterialSearchBar
     lateinit var recycleView: RecyclerView
+    private var htmlExtractor = HtmlExtractorService()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +47,24 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
 
         // This loop will create 20 Views containing
         // the image with the count of view
-        for (i in 1..20) {
-            data.add(Book.createBook(i % 2 == 0, coverUri[Random.nextInt(0, 4)]))
-        }
+//        for (i in 1..20) {
+//            data.add(Book.createBook(i % 2 == 0, coverUri[Random.nextInt(0, 4)]))
+//        }
         val adapter = BooksAdapter(data)
-        recycleView.adapter = adapter
 
+        GlobalScope.launch {
+            htmlExtractor.extract().forEach { goodReadsBook ->
+                data.add(Book.createBook(
+                    bookUrl= goodReadsBook.cover,
+                    author = goodReadsBook.authors,
+                    title = goodReadsBook.title
+                ))
+                adapter.filterList(data)
+            }
+        }
+
+        recycleView.adapter = adapter
+//        adapter.getBookMutableLiveData().observe(activity.applicationContext, booksListUpdateObserver )
         searchBar.addTextChangeListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -56,7 +72,7 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
                     SearchActivity::class.java.name,
                     javaClass.simpleName + " text changed " + searchBar.text
                 )
-                Toast.makeText(activity, "Search: ${searchBar.text}", Toast.LENGTH_SHORT).show()
+
                 adapter.filterList(data
                     .filter { it.author.contains(searchBar.text)
                             || it.title.contains(searchBar.text)}

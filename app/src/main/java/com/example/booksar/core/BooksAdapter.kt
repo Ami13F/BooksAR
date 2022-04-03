@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.booksar.R
 import com.example.booksar.models.Book
@@ -13,6 +14,9 @@ import com.squareup.picasso.Picasso
 
 class BooksAdapter(private var booksList: List<Book>) :
     RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
+
+    var bookLiveData = MutableLiveData<Book>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.book_list, parent, false)
@@ -25,6 +29,10 @@ class BooksAdapter(private var booksList: List<Book>) :
         booksList = filterBooks
 
         notifyDataSetChanged()
+    }
+
+    fun getBookMutableLiveData(): MutableLiveData<Book> {
+        return bookLiveData
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
