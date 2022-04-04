@@ -12,7 +12,7 @@ import com.example.booksar.models.Book
 import com.squareup.picasso.Picasso
 
 
-class BooksAdapter(private var booksList: List<Book>) :
+class BooksAdapter(private var booksList: MutableList<Book>) :
     RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
 
     var bookLiveData = MutableLiveData<Book>()
@@ -25,7 +25,7 @@ class BooksAdapter(private var booksList: List<Book>) :
     }
 
     // method for filtering our recyclerview items.
-    fun filterList(filterBooks: List<Book>) {
+    fun updateBooks(filterBooks: MutableList<Book>) {
         booksList = filterBooks
 
         notifyDataSetChanged()

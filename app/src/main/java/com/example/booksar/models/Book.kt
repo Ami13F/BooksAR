@@ -29,6 +29,8 @@ data class Book(
         ): Book {
             return Book(
                 500,
+                title = title,
+                author = author,
                 size = Vector3(10.14903799f, 10.038000144f, 0.2450379f),
                 position = Vector3(qx, qy, qz),
                 rotation = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f),

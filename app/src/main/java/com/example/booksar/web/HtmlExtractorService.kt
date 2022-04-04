@@ -6,9 +6,9 @@ import org.jsoup.Jsoup
 
 class HtmlExtractorService {
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun extract(): Array<GoodReadsBook>
+    suspend fun extract(): MutableList<GoodReadsBook>
     {
-        val goodReadsBookArray = emptyArray<GoodReadsBook>()
+        val goodReadsBookArray = mutableListOf<GoodReadsBook>()
 
         withContext(Dispatchers.IO) {
             val doc = Jsoup.connect("https://www.goodreads.com/search?q=Intelligent").get()
@@ -30,7 +30,7 @@ class HtmlExtractorService {
                     goodReadsBook.authors = array.joinToString()
 
                     Log.w("[ami]", goodReadsBook.toString())
-                    goodReadsBookArray.plus(goodReadsBook)
+                    goodReadsBookArray.add(goodReadsBook)
                 }
         }
         return goodReadsBookArray
