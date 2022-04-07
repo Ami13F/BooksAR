@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso
 
 
 class BooksAdapter(
-    val activity: Activity,
+    private val activity: Activity,
     private var booksList: MutableList<Book>,
 ) :
     RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
