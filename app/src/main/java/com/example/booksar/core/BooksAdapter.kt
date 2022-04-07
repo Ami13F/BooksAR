@@ -1,21 +1,27 @@
 package com.example.booksar.core
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.booksar.MainActivity
 import com.example.booksar.R
 import com.example.booksar.models.Book
 import com.squareup.picasso.Picasso
 
 
-class BooksAdapter(private var booksList: MutableList<Book>) :
+class BooksAdapter(
+    val activity: Activity,
+    private var booksList: MutableList<Book>,
+) :
     RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
-
-    var bookLiveData = MutableLiveData<Book>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -31,12 +37,22 @@ class BooksAdapter(private var booksList: MutableList<Book>) :
         notifyDataSetChanged()
     }
 
-    fun getBookMutableLiveData(): MutableLiveData<Book> {
-        return bookLiveData
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val bookModel = booksList[position]
+        val b = Bundle()
+        b.putSerializable("book", null)
+
+        holder.itemView.setOnClickListener{ _ ->
+//            bookArService.createObject(bookModel)
+            val intent = Intent(activity, MainActivity::class.java)
+//            b.putO("key", 1) //Your id
+            b.putSerializable("book", bookModel)
+            intent.putExtras(b) //Put your id to your next Intent
+
+            activity.startActivity(intent)
+            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            activity.startActivityIfNeeded( intent, 0)
+        }
 
         Picasso.get()
             .load(bookModel.cover.url)

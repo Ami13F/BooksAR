@@ -1,6 +1,6 @@
 package com.example.booksar.models
 
-import android.graphics.Bitmap
+import java.io.Serializable
 
 data class BookCover(
     val width: Int = 100,
@@ -12,5 +12,5 @@ data class BookCover(
      */
     var NeedDefaultCover: Boolean = true
 
-) {
+) : Serializable {
 }

@@ -7,10 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.booksar.core.BookArFragment
 import com.example.booksar.core.BookArService
-import com.example.booksar.web.HtmlExtractorService
+import com.example.booksar.models.Book
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,18 +22,17 @@ class MainActivity : AppCompatActivity() {
         mainFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as BookArFragment
 
         bookArService = BookArService(this, mainFragment)
+
         mainFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
             Toast.makeText(this.baseContext, "pressed", Toast.LENGTH_SHORT).show()
-            bookArService.createObject(BOOK_URI)
+            val book = intent.getSerializableExtra("book") as Book?
+            if(book != null)
+            bookArService.createObject(book)
         }
 
         val searchBtn = findViewById<FloatingActionButton>(R.id.searchBookBtn)
         searchBtn.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
-    }
-
-    companion object {
-        val BOOK_URI: Uri = Uri.parse("models/book_small.glb")
     }
 }

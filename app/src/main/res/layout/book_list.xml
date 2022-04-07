@@ -24,19 +24,19 @@
         android:id="@+id/title"
         android:text="Big nice title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_toEndOf="@id/cover"
         android:fontFamily="sans-serif-medium"
-        android:textSize="20dp" />
+        android:textSize="17dp" />
 
     <TextView
         android:id="@+id/author"
         android:text="By Amelia Forgacs"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:layout_toEndOf="@id/cover"
-        android:textSize="15dp" />
+        android:textSize="14dp" />
 
 
     </RelativeLayout>

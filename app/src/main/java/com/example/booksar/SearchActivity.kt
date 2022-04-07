@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,10 +12,9 @@ import com.example.booksar.core.BooksAdapter
 import com.example.booksar.models.Book
 import com.example.booksar.web.HtmlExtractorService
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -25,9 +23,11 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
     lateinit var recycleView: RecyclerView
     private var htmlExtractor = HtmlExtractorService()
     private var data = mutableListOf<Book>()
+    private val liveData = MutableLiveData<MutableList<Book>>()
 
-    private var adapter = BooksAdapter(data)
+    private var adapter = BooksAdapter(this, data)
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -39,47 +39,51 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
         searchBar = findViewById(R.id.searchBar)
         searchBar.openSearch()
 
-        val liveData = MutableLiveData<MutableList<Book>>()
-
         recycleView.adapter = adapter
 
         liveData.observe(this) { mutableBooks ->
             adapter.updateBooks(mutableBooks)
         }
 
-        GlobalScope.launch {
-            htmlExtractor.extract().forEach { goodReadsBook ->
-                data.add(
-                    Book.createBook(
-                        bookUrl = goodReadsBook.cover,
-                        author = goodReadsBook.authors,
-                        title = goodReadsBook.title
-                    )
-                )
-            }
-            liveData.postValue(data)
-        }
-
         searchBar.addTextChangeListener(object : TextWatcher {
+            var timer = Timer()
+            val DELAY: Long = 1000 // Milliseconds
+
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 Log.d(
                     SearchActivity::class.java.name,
                     javaClass.simpleName + " text changed " + searchBar.text
                 )
-
-                liveData.postValue(data
-                    .filter {
-                        filterBook(it)
-                    }.toMutableList()
+                timer.cancel()
+                timer = Timer()
+                timer.schedule(
+                    object : TimerTask() {
+                        override fun run() {
+                            data.clear()
+                            GlobalScope.launch {
+                                htmlExtractor.extract(searchBar.text)
+                                    .forEach { goodReadsBook ->
+                                        data.add(
+                                            Book.createBook(
+                                                bookUrl = goodReadsBook.cover,
+                                                author = goodReadsBook.authors,
+                                                title = goodReadsBook.title
+                                            )
+                                        )
+                                    }
+                                liveData.postValue(data)
+                            }
+                        }
+                    },
+                    DELAY
                 )
+
             }
 
-            private fun filterBook(it: Book) =
-                (it.author.contains(searchBar.text, ignoreCase = true)
-                        || it.title.contains(searchBar.text, ignoreCase = true))
+            override fun afterTextChanged(editable: Editable) {
 
-            override fun afterTextChanged(editable: Editable) {}
+            }
         })
     }
 
@@ -88,7 +92,7 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onButtonClicked(buttonCode: Int) {

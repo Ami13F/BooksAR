@@ -1,5 +1,6 @@
 package com.example.booksar.core
 
+import android.app.Activity
 import android.net.Uri
 import com.example.booksar.MainActivity
 import com.example.booksar.R
@@ -13,6 +14,7 @@ import com.google.ar.core.Plane
 import com.google.ar.core.Pose
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
@@ -21,11 +23,15 @@ import com.google.ar.sceneform.ux.TransformableNode
 import java.util.concurrent.CompletableFuture
 
 
-class BookArService(private val activity: MainActivity, private var fragment: ArFragment) {
+class BookArService(private val activity: Activity, private var fragment: ArFragment) {
+
+    companion object {
+        val BOOK_URI: Uri = Uri.parse("models/book_small.glb")
+    }
 
     private var hitPose: Pose? = null
 
-    fun createObject(bookUrl: Uri) {
+    fun createObject(book: Book) {
         val frame = fragment.arSceneView.arFrame
         val point = ArScreen.getScreenCenter(activity)
         if (frame != null) {
@@ -34,7 +40,7 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
                 val trackable = hit.trackable
                 if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
                     hitPose = hit.hitPose
-                    displayObject(hit.createAnchor(), bookUrl)
+                    displayObject(hit.createAnchor(), BOOK_URI, book)
                 }
             }
         }
@@ -47,11 +53,9 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
             .build()
     }
 
-    private fun displayObject(createAnchor: Anchor, bookUrl: Uri) {
+    private fun displayObject(createAnchor: Anchor, bookUrl: Uri, book: Book) {
         createBookObject(bookUrl)
             .thenAccept {
-                //TODO:replace with book from api
-                val book = createBook(false, qx= hitPose!!.qx(),qy= hitPose!!.qy(),qz= hitPose!!.qy())
                 addObjectToScene(fragment, createAnchor, book, it)
             }
             .exceptionally {
@@ -65,13 +69,14 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
 //        bookNode.scaleController.minScale = 1f
 //        bookNode.scaleController.maxScale = 3f
         var child = Node()
-        child .localScale = Vector3(1f,1f,1f
+        child.localScale = Vector3(
+            1f, 1f, 1f
 //            book.size.x / modelSize.x,
 //            book.size.y / modelSize.y,
 //            book.size.z / modelSize.z
         )
-        child .localRotation = book.rotation
-        child .localPosition = book.position
+        child.localRotation = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f)
+        child.localPosition = Vector3(book.position.x, book.position.y, book.position.z)
         bookNode.addChild(child)
 
         return bookNode
@@ -87,7 +92,7 @@ class BookArService(private val activity: MainActivity, private var fragment: Ar
 
         val bookNode = TransformableNode(fragment.transformationSystem)
 
-        bookNode.localPosition = Vector3(0.0f, 0f,0.0f)
+        bookNode.localPosition = Vector3(0.0f, 0f, 0.0f)
         bookNode.localScale = Vector3(2f, 2f, 2f)
         bookNode.parent = anchorNode
         anchorNode.parent = fragment.arSceneView.scene

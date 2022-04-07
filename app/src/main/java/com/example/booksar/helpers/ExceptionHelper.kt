@@ -1,12 +1,13 @@
 package com.example.booksar.helpers
 
+import android.app.Activity
 import android.app.AlertDialog
 import com.example.booksar.MainActivity
 
 class ExceptionHelper {
 
     companion object {
-        fun onException(activity: MainActivity,it: Throwable): Nothing? {
+        fun onException(activity: Activity, it: Throwable): Nothing? {
             val builder = AlertDialog.Builder(activity)
             builder.setMessage(it.message)
                 .setTitle("Error!")
