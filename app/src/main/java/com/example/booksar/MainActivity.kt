@@ -1,7 +1,6 @@
 package com.example.booksar
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this.baseContext, "pressed", Toast.LENGTH_SHORT).show()
             val book = intent.getSerializableExtra("book") as Book?
             if(book != null)
-            bookArService.createObject(book)
+                bookArService.createObject(book)
         }
 
         val searchBtn = findViewById<FloatingActionButton>(R.id.searchBookBtn)

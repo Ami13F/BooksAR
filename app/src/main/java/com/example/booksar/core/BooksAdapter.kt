@@ -43,15 +43,11 @@ class BooksAdapter(
         b.putSerializable("book", null)
 
         holder.itemView.setOnClickListener{ _ ->
-//            bookArService.createObject(bookModel)
             val intent = Intent(activity, MainActivity::class.java)
-//            b.putO("key", 1) //Your id
             b.putSerializable("book", bookModel)
             intent.putExtras(b) //Put your id to your next Intent
 
             activity.startActivity(intent)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            activity.startActivityIfNeeded( intent, 0)
         }
 
         Picasso.get()
