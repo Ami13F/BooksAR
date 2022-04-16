@@ -9,31 +9,49 @@
     tools:context=".MainActivity">
 
     <include layout="@layout/content_main" />
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_menu"
+        android:layout_width="match_parent"
+        app:menu_colorNormal="#185797"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/searchBookBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_menu_search"
+        android:src="@android:drawable/ic_menu_search"
+        app:fab_label="SEARCH BOOK"
+        fab:fab_colorNormal="#185797"
         android:contentDescription="@string/fabDescription" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/resolveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_back_animated"
+        android:src="@drawable/common_full_open_on_phone"
+        fab:fab_colorNormal="#185797"
+        app:fab_label="SEE LIBRARY"
         android:contentDescription="@string/fabDescription" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/clearBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_menu_delete"
+        android:src="@android:drawable/ic_menu_delete"
+        app:fab_label="DELETE LIBRARY"
         android:contentDescription="@string/fabDescription" />
+    </com.github.clans.fab.FloatingActionMenu>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

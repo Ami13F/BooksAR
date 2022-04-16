@@ -43,6 +43,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.clans:fab:1.6.4'
+
     implementation 'com.google.gms:google-services:4.3.10'
     // Firebase
     implementation 'com.google.firebase:firebase-database:20.0.4'
