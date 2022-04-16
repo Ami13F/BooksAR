@@ -17,6 +17,7 @@
         android:id="@+id/fab_menu"
         android:layout_width="match_parent"
         app:menu_colorNormal="#185797"
+        fab:fab_colorPressed="@color/teal_700"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true">
@@ -27,9 +28,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_search"
+        android:src="@drawable/search_icon"
         app:fab_label="SEARCH BOOK"
         fab:fab_colorNormal="#185797"
+        fab:fab_colorPressed="@color/teal_700"
         android:contentDescription="@string/fabDescription" />
 
     <com.github.clans.fab.FloatingActionButton
@@ -38,8 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/common_full_open_on_phone"
+        android:src="@drawable/book_icon"
         fab:fab_colorNormal="#185797"
+        fab:fab_colorPressed="@color/colorAccent"
         app:fab_label="SEE LIBRARY"
         android:contentDescription="@string/fabDescription" />
 
@@ -49,9 +52,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_delete"
+        android:src="@drawable/delete_icon"
+        fab:fab_colorNormal="#185797"
         app:fab_label="DELETE LIBRARY"
         android:contentDescription="@string/fabDescription" />
     </com.github.clans.fab.FloatingActionMenu>
     </FrameLayout>
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/shareBtn"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/share_icon"
+        fab:fab_colorPressed="@color/teal_700"
+        fab:fab_colorNormal="#00185797" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

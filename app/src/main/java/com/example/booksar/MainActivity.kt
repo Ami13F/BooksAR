@@ -50,5 +50,13 @@ class MainActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             firebaseService.deleteAll()
         }
+
+        val shareButton = findViewById<FloatingActionButton>(R.id.shareBtn)
+        shareButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            val chooser = Intent.createChooser(intent, "Share library...")
+            startActivity(chooser)
+        }
     }
 }
