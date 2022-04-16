@@ -47,7 +47,7 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
 
         searchBar.addTextChangeListener(object : TextWatcher {
             var timer = Timer()
-            val DELAY: Long = 1000 // Milliseconds
+            val DELAY: Long = 100 // Milliseconds
 
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {

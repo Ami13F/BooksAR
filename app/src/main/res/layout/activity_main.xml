@@ -19,4 +19,21 @@
         app:srcCompat="@android:drawable/ic_menu_search"
         android:contentDescription="@string/fabDescription" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/resolveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_back_animated"
+        android:contentDescription="@string/fabDescription" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/clearBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        android:contentDescription="@string/fabDescription" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

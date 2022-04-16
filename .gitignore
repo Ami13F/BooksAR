@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/apikey.properties
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -13,6 +14,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+apikey.properties
 
 
 # OSX
@@ -51,6 +53,7 @@ project.xcworkspace
 .idea
 .gradle
 local.properties
+apikey.properties
 android.iml
 
 # Cocoapods

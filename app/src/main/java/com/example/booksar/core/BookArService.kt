@@ -2,16 +2,14 @@ package com.example.booksar.core
 
 import android.app.Activity
 import android.net.Uri
-import com.example.booksar.MainActivity
+import android.view.MotionEvent.ACTION_UP
 import com.example.booksar.R
 import com.example.booksar.helpers.CoverHelper.Companion.createCoverFromImage
 import com.example.booksar.helpers.CoverHelper.Companion.createTemplateViewCover
 import com.example.booksar.helpers.ExceptionHelper.Companion.onException
 import com.example.booksar.models.Book
-import com.example.booksar.models.Book.Companion.createBook
 import com.google.ar.core.Anchor
 import com.google.ar.core.Plane
-import com.google.ar.core.Pose
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.math.Quaternion
@@ -29,19 +27,25 @@ class BookArService(private val activity: Activity, private var fragment: ArFrag
         val BOOK_URI: Uri = Uri.parse("models/book_small.glb")
     }
 
-    private var hitPose: Pose? = null
+    private val firebaseService = FirebaseService()
 
-    fun createObject(book: Book) {
-        val frame = fragment.arSceneView.arFrame
-        val point = ArScreen.getScreenCenter(activity)
-        if (frame != null) {
-            val hits = frame.hitTest(point.x.toFloat(), point.y.toFloat())
-            for (hit in hits) {
-                val trackable = hit.trackable
-                if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
-                    hitPose = hit.hitPose
-                    displayObject(hit.createAnchor(), BOOK_URI, book)
-                }
+    fun createObject(book: Book, isFirstTimeCreated: Boolean = true) {
+        val frame = fragment.arSceneView.arFrame ?: return
+
+        var x = book.x
+        var y = book.y
+        if (isFirstTimeCreated) {
+            firebaseService.saveBook(book)
+            val point = ArScreen.getScreenCenter(activity)
+            x = point.x.toFloat()
+            y = point.y.toFloat()
+        }
+
+        val hits = frame.hitTest(x, y)
+        for (hit in hits) {
+            val trackable = hit.trackable
+            if (trackable is Plane && trackable.isPoseInPolygon(hit.hitPose)) {
+                displayObject(hit.createAnchor(), book)
             }
         }
     }
@@ -53,57 +57,45 @@ class BookArService(private val activity: Activity, private var fragment: ArFrag
             .build()
     }
 
-    private fun displayObject(createAnchor: Anchor, bookUrl: Uri, book: Book) {
-        createBookObject(bookUrl)
+    private fun displayObject(createAnchor: Anchor, book: Book) {
+        createBookObject(BOOK_URI)
             .thenAccept {
-                addObjectToScene(fragment, createAnchor, book, it)
+                addObjectToScene(createAnchor, book, it)
             }
             .exceptionally {
                 return@exceptionally onException(activity, it)
             }
     }
 
-    private fun scaleObject(book: Book, bookNode: TransformableNode): TransformableNode {
-        val modelSize = Vector3(0.14903799f, 0.038000144f, 0.2450379f)
-
-//        bookNode.scaleController.minScale = 1f
-//        bookNode.scaleController.maxScale = 3f
-        var child = Node()
-        child.localScale = Vector3(
-            1f, 1f, 1f
-//            book.size.x / modelSize.x,
-//            book.size.y / modelSize.y,
-//            book.size.z / modelSize.z
-        )
-        child.localRotation = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f)
-        child.localPosition = Vector3(book.position.x, book.position.y, book.position.z)
-        bookNode.addChild(child)
-
-        return bookNode
-    }
-
     private fun addObjectToScene(
-        fragment: ArFragment,
         anchor: Anchor,
         book: Book,
         model: ModelRenderable
     ) {
         val anchorNode = AnchorNode(anchor)
-
         val bookNode = TransformableNode(fragment.transformationSystem)
+
+        bookNode.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == ACTION_UP) {
+                // TODO: update scaling
+                firebaseService.updateBook(motionEvent, bookNode, book.id)
+            }
+            return@setOnTouchListener true
+        }
+        bookNode.localRotation =
+            Quaternion(book.rotation.x, book.rotation.y, book.rotation.z, book.rotation.w)
 
         bookNode.localPosition = Vector3(0.0f, 0f, 0.0f)
         bookNode.localScale = Vector3(2f, 2f, 2f)
         bookNode.parent = anchorNode
         anchorNode.parent = fragment.arSceneView.scene
 
-        val bookNode2 = Node()
-        bookNode2.parent = bookNode
-        bookNode2.renderable = model
-        bookNode2.localScale = Vector3(2f, 2f, 2f)
-//        scaleObject(book, bookNode)
+        val childNode = Node()
+        childNode.parent = bookNode
+        childNode.renderable = model
+        childNode.localScale = Vector3(2f, 2f, 2f)
 
-        loadViewForCover(book, bookNode2)
+        loadViewForCover(book, childNode)
 
         bookNode.select()
     }
@@ -130,6 +122,5 @@ class BookArService(private val activity: Activity, private var fragment: ArFrag
             .exceptionally {
                 return@exceptionally onException(activity, it)
             }
-
     }
 }

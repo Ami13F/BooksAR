@@ -13,13 +13,19 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+        Properties properties = new Properties()
+
+        properties.load(project.rootProject.file('apikey.properties').newDataInputStream())
+        manifestPlaceholders = [FIREBASE_KEY: "${properties.getProperty('FIREBASE_KEY')}"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
+        resources {
+            excludes += ['META-INF/DEPENDENCIES']
+        }
     }
+
 
     buildTypes {
         release {
@@ -37,6 +43,13 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.gms:google-services:4.3.10'
+    // Firebase
+    implementation 'com.google.firebase:firebase-database:20.0.4'
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
     implementation("org.jsoup:jsoup:1.13.1")
 
     // https://mvnrepository.com/artifact/com.github.mancj/MaterialSearchBar
@@ -67,4 +80,7 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2'
+    implementation 'com.google.firebase:firebase-common-ktx:20.1.0'
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
 }
+apply plugin: 'com.google.gms.google-services'

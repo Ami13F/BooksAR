@@ -1,18 +1,26 @@
 package com.example.booksar.models
 
 import android.graphics.Color
+import android.os.Parcelable
 import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
+import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import kotlin.random.Random
 import java.io.Serializable
+import java.util.*
 
 data class Book(
+    var id: String = "",
     val pages: Int? = 100,
-    val cover: BookCover,
+    val cover: BookCover = BookCover(),
     val author: String = "Amelia Forgacs" + Random.nextInt(0, 100),
     val title: String = "The best AR Book" + Random.nextInt(0, 100),
-    val size: Vector3Custom,
-    val position: Vector3Custom,
+    val size: Vector3Custom = Vector3Custom(10f,10f,10f),
+    val position: Vector3Custom = Vector3Custom(10f,10f,10f),
+    var rotation: QuaternionCustom = QuaternionCustom(0.0f, 0.0f, 0.0f, 0f),
+    var x: Float = 0f,
+    var y: Float = 0f,
     var coverWidth: Int = 1,
     var coverHeight: Int = 1,
     var coverColor: Int = Color.WHITE
@@ -29,6 +37,7 @@ data class Book(
             qz: Float = 0f
         ): Book {
             return Book(
+                UUID.randomUUID().toString(),
                 500,
                 title = title,
                 author = author,
@@ -36,6 +45,26 @@ data class Book(
                 position = Vector3Custom(qx, qy, qz),
                 cover = BookCover().apply { NeedDefaultCover = isTemplate; url = bookUrl }
             )
+        }
+
+
+        fun createBookFromDocument(document: QueryDocumentSnapshot): Book {
+            val rotationMap = document.data["rotation"] as HashMap<*, *>
+
+            val book = Book().apply {
+                id = document.data["id"].toString()
+                x = (document.data["x"] as Double).toFloat()
+                y = (document.data["y"] as Double).toFloat()
+                rotation = QuaternionCustom(
+                    (rotationMap["x"] as Double).toFloat(),
+                    (rotationMap["y"] as Double).toFloat(),
+                    (rotationMap["z"] as Double).toFloat(),
+                    (rotationMap["w"] as Double).toFloat()
+                )
+                cover.url = document.data["coverUrl"].toString()
+                cover.NeedDefaultCover = false
+            }
+            return book
         }
     }
 }

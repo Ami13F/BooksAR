@@ -13,8 +13,27 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.sceneform.ux.TransformableNode
 
 class Draft {
+    private fun scaleObject(book: Book, bookNode: TransformableNode): TransformableNode {
+        val modelSize = Vector3(0.14903799f, 0.038000144f, 0.2450379f)
+
+//        bookNode.scaleController.minScale = 1f
+//        bookNode.scaleController.maxScale = 3f
+        val child = Node()
+        child.localScale = Vector3(
+            1f, 1f, 1f
+//            book.size.x / modelSize.x,
+//            book.size.y / modelSize.y,
+//            book.size.z / modelSize.z
+        )
+        child.localRotation = Quaternion.axisAngle(Vector3(0.0f, 1.0f, 0.0f), 0f)
+        child.localPosition = Vector3(book.position.x, book.position.y, book.position.z)
+        bookNode.addChild(child)
+
+        return bookNode
+    }
 
     //TODO: use later to display book info
     //this code display a "info about book" if render like createTemplateView

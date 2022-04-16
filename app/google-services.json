@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "625345840389",
+    "project_id": "virtual-library-346710",
+    "storage_bucket": "virtual-library-346710.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625345840389:android:a3923731edd48cffe8e36c",
+        "android_client_info": {
+          "package_name": "com.example.booksar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625345840389-gpopljmb0i9k8shmtc34bmsqg57p864a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.booksar",
+            "certificate_hash": "7f87773980e0be21c78176ac6784da851b952122"
+          }
+        },
+        {
+          "client_id": "625345840389-uapes3s90gppick4vo4jtb1mjg0bghep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZKLOMK58ZcohT8T5iVLz_K4xe7xcRUpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625345840389-uapes3s90gppick4vo4jtb1mjg0bghep.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

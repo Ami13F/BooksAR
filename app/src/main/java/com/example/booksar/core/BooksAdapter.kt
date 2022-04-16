@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.booksar.MainActivity
 import com.example.booksar.R
@@ -20,8 +18,7 @@ import com.squareup.picasso.Picasso
 class BooksAdapter(
     private val activity: Activity,
     private var booksList: MutableList<Book>,
-) :
-    RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,10 +27,8 @@ class BooksAdapter(
         return ViewHolder(view)
     }
 
-    // method for filtering our recyclerview items.
     fun updateBooks(filterBooks: MutableList<Book>) {
         booksList = filterBooks
-
         notifyDataSetChanged()
     }
 
@@ -42,7 +37,7 @@ class BooksAdapter(
         val b = Bundle()
         b.putSerializable("book", null)
 
-        holder.itemView.setOnClickListener{ _ ->
+        holder.itemView.setOnClickListener { _ ->
             val intent = Intent(activity, MainActivity::class.java)
             b.putSerializable("book", bookModel)
             intent.putExtras(b) //Put your id to your next Intent
