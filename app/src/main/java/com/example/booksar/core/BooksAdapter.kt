@@ -37,7 +37,7 @@ class BooksAdapter(
         val b = Bundle()
         b.putSerializable("book", null)
 
-        holder.itemView.setOnClickListener { _ ->
+        holder.itemView.setOnClickListener {
             val intent = Intent(activity, MainActivity::class.java)
             b.putSerializable("book", bookModel)
             intent.putExtras(b) //Put your id to your next Intent

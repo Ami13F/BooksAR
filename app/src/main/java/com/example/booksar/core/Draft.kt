@@ -1,10 +1,6 @@
 package com.example.booksar.core
 
-import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
-import com.example.booksar.R
-import com.example.booksar.helpers.ImageHelper
 import com.example.booksar.models.Book
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.collision.Box

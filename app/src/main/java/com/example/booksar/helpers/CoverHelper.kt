@@ -2,7 +2,6 @@ package com.example.booksar.helpers
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ColorSpace
 import android.graphics.drawable.Drawable
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -17,7 +16,6 @@ import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import org.michaelevans.colorart.library.ColorArt
 
 
 class CoverHelper {
@@ -113,7 +111,7 @@ class CoverHelper {
                 })
         }
 
-        fun resizeCover(
+        private fun resizeCover(
             coverNode: Node,
             viewRenderable: ViewRenderable,
             bookNode: Node

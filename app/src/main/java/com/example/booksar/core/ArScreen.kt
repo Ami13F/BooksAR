@@ -4,7 +4,7 @@ import android.app.Activity
 import android.graphics.Point
 import android.view.View
 
-class ArScreen() {
+class ArScreen {
     companion object {
         fun getScreenCenter(activity: Activity): Point {
             val view = activity.findViewById<View>(android.R.id.content)

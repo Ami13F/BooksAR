@@ -1,14 +1,10 @@
 package com.example.booksar.models
 
 import android.graphics.Color
-import android.os.Parcelable
-import com.google.ar.sceneform.math.Quaternion
-import com.google.ar.sceneform.math.Vector3
-import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.QueryDocumentSnapshot
-import kotlin.random.Random
 import java.io.Serializable
 import java.util.*
+import kotlin.random.Random
 
 data class Book(
     var id: String = "",

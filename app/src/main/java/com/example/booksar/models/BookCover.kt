@@ -12,5 +12,4 @@ data class BookCover(
      */
     var NeedDefaultCover: Boolean = true
 
-) : Serializable {
-}
+) : Serializable
