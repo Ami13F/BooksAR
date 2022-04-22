@@ -75,10 +75,16 @@ class BookArService(private val activity: Activity, private var fragment: ArFrag
         val anchorNode = AnchorNode(anchor)
         val bookNode = TransformableNode(fragment.transformationSystem)
 
+        val bookInfo: CompletableFuture<ViewRenderable> =
+            ViewRenderable.builder().setView(this.activity, R.layout.book_info).build()
         bookNode.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == ACTION_UP) {
                 // TODO: update scaling
                 firebaseService.updateBook(motionEvent, bookNode, book.id)
+                val childNode = Node()
+                childNode.parent = bookNode
+                childNode.renderable = bookInfo.get()
+                childNode.localPosition = Vector3(0.0f, 0.25f, 0.0f);
             }
             return@setOnTouchListener true
         }

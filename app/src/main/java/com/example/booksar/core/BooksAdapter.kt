@@ -48,7 +48,7 @@ class BooksAdapter(
         Picasso.get()
             .load(bookModel.cover.url)
             .into(holder.imageView)
-        // sets the text to the textview from our itemHolder class
+
         holder.titleView.text = bookModel.title
         holder.authorView.text = bookModel.author
     }
