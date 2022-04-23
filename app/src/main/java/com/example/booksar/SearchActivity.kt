@@ -47,7 +47,7 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
 
         searchBar.addTextChangeListener(object : TextWatcher {
             var timer = Timer()
-            val DELAY: Long = 100 // Milliseconds
+            val DELAY: Long = 500 // Milliseconds
 
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -60,25 +60,11 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
                 timer.schedule(
                     object : TimerTask() {
                         override fun run() {
-                            data.clear()
-                            GlobalScope.launch {
-                                htmlExtractor.extract(searchBar.text)
-                                    .forEach { goodReadsBook ->
-                                        data.add(
-                                            Book.createBook(
-                                                bookUrl = goodReadsBook.cover,
-                                                author = goodReadsBook.authors,
-                                                title = goodReadsBook.title
-                                            )
-                                        )
-                                    }
-                                liveData.postValue(data)
-                            }
+                            searchBook()
                         }
                     },
                     DELAY
                 )
-
             }
 
             override fun afterTextChanged(editable: Editable) {
@@ -87,15 +73,32 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
         })
     }
 
+    private fun searchBook() {
+        data.clear()
+        GlobalScope.launch {
+            htmlExtractor.extract(searchBar.text)
+                .forEach { goodReadsBook ->
+                    data.add(
+                        Book.createBook(
+                            bookUrl = goodReadsBook.cover,
+                            author = goodReadsBook.authors,
+                            title = goodReadsBook.title
+                        )
+                    )
+                }
+            liveData.postValue(data)
+        }
+    }
+
     override fun onSearchStateChanged(enabled: Boolean) {
         TODO("Not yet implemented")
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
-
+        searchBook()
     }
 
     override fun onButtonClicked(buttonCode: Int) {
-        TODO("Not yet implemented")
+        searchBook()
     }
 }

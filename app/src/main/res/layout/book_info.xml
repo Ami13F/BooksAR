@@ -22,7 +22,7 @@
         android:id="@+id/summaryText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Here insert your book summary!"
+        android:text="You didn't read this book or you don't have a summary for it, please add one."
         android:textAlignment="center"
         android:textSize="5sp"
         android:textStyle="bold" />
