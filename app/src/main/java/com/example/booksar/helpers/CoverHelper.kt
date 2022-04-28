@@ -78,8 +78,8 @@ class CoverHelper {
             val root = (coverNode.renderable as ViewRenderable).view as FrameLayout
             root.findViewById<TextView>(R.id.author)?.text = book.author
             root.findViewById<TextView>(R.id.title)?.text = book.title
-            root.findViewById<TextView>(R.id.title)?.setTextColor(book.cover.textColor)
-            root.findViewById<TextView>(R.id.author)?.setTextColor(book.cover.textColor)
+//            root.findViewById<TextView>(R.id.title)?.setTextColor(book.cover.textColor)
+//            root.findViewById<TextView>(R.id.author)?.setTextColor(book.cover.textColor)
         }
 
         fun createCoverFromImage(

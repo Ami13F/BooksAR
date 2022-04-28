@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/testview"
+    android:id="@+id/infoView"
     android:layout_width="100dp"
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_background"
@@ -15,7 +16,7 @@
         android:layout_height="wrap_content"
         android:text="Book Summary:"
         android:textAlignment="center"
-        android:textSize="8sp"
+        android:textSize="7sp"
         android:textStyle="bold" />
 
     <TextView
@@ -32,7 +33,7 @@
         android:layout_height="wrap_content">
 
         <RatingBar
-            android:id="@+id/rBar"
+            android:id="@+id/reviewStars"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,4 +46,53 @@
             android:rating="5"
             tools:ignore="SpeakableTextPresentCheck" />
     </RelativeLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/chipGroup"
+        android:orientation="horizontal"
+        app:flexWrap="wrap"
+        app:justifyContent="center">
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipCpp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="GEEKS"
+        android:textSize="8sp"
+
+        app:ensureMinTouchTargetSize="false"
+        app:textEndPadding="0dp"
+        app:textStartPadding="0dp"
+
+        app:chipMinHeight="3dp" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipCp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="GEEKS"
+            android:textSize="8sp"
+
+            app:ensureMinTouchTargetSize="false"
+            app:chipMinHeight="3dp"
+            app:textEndPadding="0dp"
+            app:textStartPadding="0dp"
+            />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipCcp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+
+            app:ensureMinTouchTargetSize="false"
+
+            app:textEndPadding="0dp"
+            app:textStartPadding="0dp"
+            android:text="T"
+            android:textSize="8sp"
+            app:chipMinHeight="3dp"/>
+    </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

@@ -10,11 +10,16 @@ import android.view.PixelCopy
 import androidx.appcompat.app.AppCompatActivity
 import com.example.booksar.core.BookArService
 import com.example.booksar.core.BooksArFragment
-import com.example.booksar.core.FirebaseService
+import com.example.booksar.database.FirebaseService
+import com.example.booksar.database.NotionFirebase
 import com.example.booksar.models.Book
 import com.github.clans.fab.FloatingActionButton
 import com.google.ar.sceneform.ArSceneView
 import com.google.firebase.FirebaseApp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,10 +34,18 @@ class MainActivity : AppCompatActivity() {
 
         FirebaseApp.initializeApp(this)
 
+        val notionFirebase = NotionFirebase()
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+//                notionService.initializeNotionBooks()
+                notionFirebase.fetchNotionRow()
+            }
+        }
+
         mainFragment =
             supportFragmentManager.findFragmentById(R.id.arFragment) as BooksArFragment
 
-        bookArService = BookArService(this, mainFragment)
+        bookArService = BookArService(this, mainFragment, notionFirebase)
         mainFragment.bookArService = bookArService
 
         mainFragment.setOnTapArPlaneListener { _, _, _ ->

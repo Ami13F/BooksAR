@@ -4,16 +4,17 @@ import android.graphics.Color
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.random.Random
 
 data class Book(
     var id: String = "",
     val pages: Int? = 100,
-    val cover: BookCover = BookCover(),
-    val author: String = "Amelia Forgacs" + Random.nextInt(0, 100),
-    val title: String = "The best AR Book" + Random.nextInt(0, 100),
-    val size: Vector3Custom = Vector3Custom(10f,10f,10f),
-    val position: Vector3Custom = Vector3Custom(10f,10f,10f),
+    var cover: BookCover = BookCover(),
+    var author: String = "Amelia Forgacs" + Random.nextInt(0, 100),
+    var title: String = "The best AR Book" + Random.nextInt(0, 100),
+    val size: Vector3Custom = Vector3Custom(10f, 10f, 10f),
+    val position: Vector3Custom = Vector3Custom(10f, 10f, 10f),
     var rotation: QuaternionCustom = QuaternionCustom(0.0f, 0.0f, 0.0f, 0f),
     var x: Float = 0f,
     var y: Float = 0f,
@@ -46,9 +47,12 @@ data class Book(
 
         fun createBookFromDocument(document: QueryDocumentSnapshot): Book {
             val rotationMap = document.data["rotation"] as HashMap<*, *>
+            val newCover = (document.data["cover"] as HashMap<*, *>)
 
             val book = Book().apply {
                 id = document.data["id"].toString()
+                title = document.data["title"].toString()
+                author = document.data["author"].toString()
                 x = (document.data["x"] as Double).toFloat()
                 y = (document.data["y"] as Double).toFloat()
                 rotation = QuaternionCustom(
@@ -57,8 +61,13 @@ data class Book(
                     (rotationMap["z"] as Double).toFloat(),
                     (rotationMap["w"] as Double).toFloat()
                 )
-                cover.url = document.data["coverUrl"].toString()
-                cover.NeedDefaultCover = false
+                cover = BookCover(
+                    width = (newCover["width"] as Long).toInt(),
+                    height = (newCover["height"] as Long).toInt(),
+                    NeedDefaultCover = (newCover["needDefaultCover"]) as Boolean? ?: true,
+                    url = newCover["url"].toString()
+                )
+//                cover.NeedDefaultCover = false
             }
             return book
         }
