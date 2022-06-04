@@ -13,6 +13,7 @@ import com.example.booksar.core.BooksArFragment
 import com.example.booksar.database.FirebaseService
 import com.example.booksar.database.NotionFirebase
 import com.example.booksar.models.Book
+import com.example.booksar.notion.NotionService
 import com.github.clans.fab.FloatingActionButton
 import com.google.ar.sceneform.ArSceneView
 import com.google.firebase.FirebaseApp
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val notionFirebase = NotionFirebase()
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-//                notionService.initializeNotionBooks()
+//                NotionService().initializeNotionBooks()
                 notionFirebase.fetchNotionRow()
             }
         }

@@ -47,12 +47,11 @@
             tools:ignore="SpeakableTextPresentCheck" />
     </RelativeLayout>
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:id="@+id/chipGroup"
-        android:orientation="horizontal"
-        app:justifyContent="center">
-    </com.google.android.flexbox.FlexboxLayout>
+        android:textAlignment="center"
+        android:layout_gravity="center">
+    </com.google.android.material.chip.ChipGroup>
 </LinearLayout>

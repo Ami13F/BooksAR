@@ -3,8 +3,8 @@ package com.example.booksar.core
 import android.app.Activity
 import android.net.Uri
 import android.util.Log
+import android.view.Gravity
 import android.view.MotionEvent.ACTION_UP
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
@@ -15,6 +15,7 @@ import com.example.booksar.helpers.CoverHelper.Companion.createCoverFromImage
 import com.example.booksar.helpers.CoverHelper.Companion.createTemplateViewCover
 import com.example.booksar.helpers.ExceptionHelper.Companion.onException
 import com.example.booksar.models.Book
+import com.example.booksar.notion.BookRow
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -28,6 +29,7 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
+import java.text.Normalizer
 import java.util.concurrent.CompletableFuture
 
 
@@ -91,7 +93,6 @@ class BookArService(
 
         bookNode.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == ACTION_UP) {
-                // TODO: update scaling
                 val id = bookNode.name ?: ""
                 firebaseService.updateBook(motionEvent, bookNode, id) //book.id
                 firebaseService.getBook(id, bookNode, this) //book.id
@@ -123,14 +124,13 @@ class BookArService(
                 Log.w("[ami]", "bookInfo: ${book.title}")
                 val bookRowNotion = notionService.getBookRows()
                     .firstOrNull {
-                        it.title.contains(book.title)
-                                || book.title.contains(it.title)
+                        b(it, book)
                     }
 
                 val summary = viewRenderable.view.findViewById<TextView>(R.id.summaryText)
                 val stars = viewRenderable.view.findViewById<RatingBar>(R.id.reviewStars)
                 val infoView = viewRenderable.view.findViewById<LinearLayout>(R.id.infoView)
-                val chipGroup = viewRenderable.view.findViewById<FlexboxLayout>(R.id.chipGroup)
+                val chipGroup = viewRenderable.view.findViewById<ChipGroup>(R.id.chipGroup)
 
                 if (bookRowNotion != null) {
                     summary.text = bookRowNotion.summary
@@ -143,7 +143,7 @@ class BookArService(
                     )
 
                     bookRowNotion.genres.forEach { genre ->
-                        createChip(chipGroup, layoutParams, genre)
+                        createChip(chipGroup, layoutParams, genre ?: "")
                     }
                 } else {
                     summary.text =
@@ -155,32 +155,53 @@ class BookArService(
                 childNode.renderable = viewRenderable
                 childNode.localPosition = Vector3(0.0f, 0.25f, 0.0f)
             }
+    }
 
-//        Log.w("[ami]", "bookRow: ${bookRowNotion?.summary}")
+    private fun b(
+        it: BookRow,
+        book: Book
+    ) : Boolean {
+        it.title = it.title.removeDiacritics()
+        book.title = book.title.removeDiacritics()
 
+        return (it.title.contains(book.title, ignoreCase = true)
+                || book.title.contains(it.title, ignoreCase = true))
+    }
 
+    private fun CharSequence.removeDiacritics(): String {
+        val regex = "\\p{InCombiningDiacriticalMarks}+".toRegex()
+
+        val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
+        return regex.replace(temp, "")
     }
 
     private fun createChip(
-        chipGroup: FlexboxLayout,
+        chipGroup: ChipGroup,
         layoutParams: FlexboxLayout.LayoutParams,
-        genre: String?
+        genre: String
     ) {
+      if (genre.isEmpty()) return
         val gen = Chip(chipGroup.context)
 
-        gen.layoutParams = layoutParams
+//        gen.layoutParams = layoutParams
         gen.text = genre
-        gen.textSize = 6f
+        gen.textSize = 5f
+        gen.gravity = (Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL)
+        gen.setPadding(0, 0, 0, 0)
         gen.chipStartPadding = 0f
         gen.chipEndPadding = 0f
         gen.setEnsureMinTouchTargetSize(false)
-        gen.textStartPadding = 5f
+        gen.textStartPadding = 10f
         gen.textEndPadding = 0f
         gen.chipMinHeight = 0f
         gen.minHeight = 0
         gen.minimumHeight = 0
-        gen.minWidth = 0
-        gen.minimumWidth = 0
+        gen.closeIconSize = 0f
+        gen.closeIconEndPadding = 0f
+
+        layoutParams.height = 80//ChipGroup.LayoutParams.WRAP_CONTENT
+        layoutParams.width =  genre.length * 10
+        gen.layoutParams = layoutParams
 
         chipGroup.addView(gen)
     }

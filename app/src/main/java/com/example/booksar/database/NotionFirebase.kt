@@ -43,4 +43,18 @@ class NotionFirebase {
     fun getBookRows(): MutableList<BookRow> {
         return books
     }
+
+    fun removeAllBooks() {
+        val batch = database.batch()
+        database.collection(collectionPath).get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result.forEach {
+                        batch.delete(it.reference)
+                    }
+                }
+                batch.commit()
+            }
+
+    }
 }

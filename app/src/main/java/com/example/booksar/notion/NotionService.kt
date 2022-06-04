@@ -6,12 +6,12 @@ import com.example.booksar.database.NotionFirebase
 import notion.api.v1.NotionClient
 
 class NotionService() {
-//    companion object {
 
     private var bookRows = mutableListOf<BookRow>()
 
     fun initializeNotionBooks() {
         val startTime = System.currentTimeMillis()
+        NotionFirebase().removeAllBooks()
 
         val client = NotionClient(token = BuildConfig.TOKEN)
         client.use {
@@ -48,22 +48,22 @@ class NotionService() {
 
 //                    bookRows.add(
 //                        BookRow(
-//                            titleBook,
+//                            bookTitle,
 //                            author = author,
 //                            summary = summary,
 //                            reviewStartNumbers = review,
 //                            genres = genres
 //                        )
 //                    )
-//                    NotionFirebase().saveNotionRow(
-//                        BookRow(
-//                            titleBook,
-//                            author = author,
-//                            summary = summary,
-//                            reviewStartNumbers = review,
-//                            genres = genres
-//                        )
-//                    )
+                    NotionFirebase().saveNotionRow(
+                        BookRow(
+                            bookTitle,
+                            author = author,
+                            summary = summary,
+                            reviewStartNumbers = review,
+                            genres = genres
+                        )
+                    )
                 }
             Log.w(
                 "[ami]",
@@ -73,9 +73,7 @@ class NotionService() {
         client.close()
     }
 
-//    fun getBookRows(): MutableList<BookRow> {
-////        return mutableListOf()
-//        return bookRows
-//    }
-//    }
+    fun getBookRows(): MutableList<BookRow> {
+        return bookRows
+    }
 }
