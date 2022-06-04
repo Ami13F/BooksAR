@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.MotionEvent.ACTION_UP
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import com.example.booksar.R
@@ -16,6 +17,7 @@ import com.example.booksar.helpers.ExceptionHelper.Companion.onException
 import com.example.booksar.models.Book
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.ar.core.Anchor
 import com.google.ar.core.Plane
 import com.google.ar.sceneform.AnchorNode
@@ -127,23 +129,21 @@ class BookArService(
 
                 val summary = viewRenderable.view.findViewById<TextView>(R.id.summaryText)
                 val stars = viewRenderable.view.findViewById<RatingBar>(R.id.reviewStars)
-                val infoView = viewRenderable.view.findViewById<FlexboxLayout>(R.id.chipGroup)
+                val infoView = viewRenderable.view.findViewById<LinearLayout>(R.id.infoView)
+                val chipGroup = viewRenderable.view.findViewById<FlexboxLayout>(R.id.chipGroup)
+
                 if (bookRowNotion != null) {
                     summary.text = bookRowNotion.summary
                     stars.rating = bookRowNotion.reviewStartNumbers.toFloat()
                     Log.w("[ami]", "${bookRowNotion.genres?.size}")
                     Log.w("[ami]", "${summary.text} was here")
-                    bookRowNotion.genres.forEach { genre ->
-                        val gen = Chip(viewRenderable.view.context)
-                        gen.text = genre
-                        gen.textSize = 6f
-                        gen.minHeight = 3
-                        gen.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                    val layoutParams = FlexboxLayout.LayoutParams(
+                        FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                        FlexboxLayout.LayoutParams.WRAP_CONTENT
+                    )
 
-                        gen.setEnsureMinTouchTargetSize(false)
-                        gen.textEndPadding = 0f
-                        gen.textStartPadding = 0f
-                        infoView.addView(gen)
+                    bookRowNotion.genres.forEach { genre ->
+                        createChip(chipGroup, layoutParams, genre)
                     }
                 } else {
                     summary.text =
@@ -160,6 +160,31 @@ class BookArService(
 
 
     }
+
+    private fun createChip(
+        chipGroup: FlexboxLayout,
+        layoutParams: FlexboxLayout.LayoutParams,
+        genre: String?
+    ) {
+        val gen = Chip(chipGroup.context)
+
+        gen.layoutParams = layoutParams
+        gen.text = genre
+        gen.textSize = 6f
+        gen.chipStartPadding = 0f
+        gen.chipEndPadding = 0f
+        gen.setEnsureMinTouchTargetSize(false)
+        gen.textStartPadding = 5f
+        gen.textEndPadding = 0f
+        gen.chipMinHeight = 0f
+        gen.minHeight = 0
+        gen.minimumHeight = 0
+        gen.minWidth = 0
+        gen.minimumWidth = 0
+
+        chipGroup.addView(gen)
+    }
+
 
     private fun loadViewForCover(book: Book, bookNode: Node) {
         if (book.cover.NeedDefaultCover)

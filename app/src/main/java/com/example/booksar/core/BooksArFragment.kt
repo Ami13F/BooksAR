@@ -26,6 +26,7 @@ class BooksArFragment : ArFragment(){
             environmentalHdrSpecularFilter = true
         )
     }
+
     private fun sessionConfiguration() {
         arSceneView.session = Session(this.activity)
         val config = Config(arSceneView.session)
@@ -33,6 +34,4 @@ class BooksArFragment : ArFragment(){
         config.updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
         arSceneView.session!!.configure(config)
     }
-
-
 }

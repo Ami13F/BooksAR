@@ -53,46 +53,6 @@
         android:gravity="center"
         android:id="@+id/chipGroup"
         android:orientation="horizontal"
-        app:flexWrap="wrap"
         app:justifyContent="center">
-    <com.google.android.material.chip.Chip
-        android:id="@+id/chipCpp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="GEEKS"
-        android:textSize="8sp"
-
-        app:ensureMinTouchTargetSize="false"
-        app:textEndPadding="0dp"
-        app:textStartPadding="0dp"
-
-        app:chipMinHeight="3dp" />
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipCp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="GEEKS"
-            android:textSize="8sp"
-
-            app:ensureMinTouchTargetSize="false"
-            app:chipMinHeight="3dp"
-            app:textEndPadding="0dp"
-            app:textStartPadding="0dp"
-            />
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipCcp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-
-            app:ensureMinTouchTargetSize="false"
-
-            app:textEndPadding="0dp"
-            app:textStartPadding="0dp"
-            android:text="T"
-            android:textSize="8sp"
-            app:chipMinHeight="3dp"/>
     </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

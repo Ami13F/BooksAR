@@ -93,8 +93,11 @@ class CoverHelper {
             coverNode.renderable = viewRenderable
 
             val img = (coverNode.renderable as ViewRenderable).view as ImageView
-            Picasso.get().load(book.cover.url)
-                .resize(100, 120)
+            val height = 120
+            val width = 100
+            Picasso.get()
+                .load(book.cover.url)
+                .resize(width, height)
                 .into(object : Target {
                     override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) {
                         img.setImageBitmap(bitmap)

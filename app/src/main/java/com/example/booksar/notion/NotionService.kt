@@ -19,10 +19,10 @@ class NotionService() {
 
             db.results.asSequence().map { it.properties }
                 .mapNotNull { it["Name"]?.title?.firstOrNull()?.plainText }
-                .forEach { titleBook ->
+                .forEach { bookTitle ->
                     val bookByTitle = db.results.asSequence().map { it.properties }
                         .filter {
-                            it["Name"]?.title?.firstOrNull()?.plainText?.contains(titleBook)
+                            it["Name"]?.title?.firstOrNull()?.plainText?.contains(bookTitle)
                                 ?: false
                         }
 
@@ -40,7 +40,8 @@ class NotionService() {
                         .map { it.name?.length ?: 0 }
                         .toList().firstOrNull() ?: 0
 
-                    val genres = bookByTitle.map { it["Genre"] }.map { it?.multiSelect }
+                    val genres = bookByTitle
+                            .map { it["Genre"] }.map { it?.multiSelect }
                         .filter { it?.isNotEmpty() ?: false }
                         .mapNotNull { el -> el?.map { it.name } }
                         .toList().firstOrNull() ?: listOf()
