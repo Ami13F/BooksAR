@@ -203,8 +203,6 @@ class BookArService(
             chip.maxWidth = 150
         if (genre.length in 9..12)
             chip.maxWidth = 130
-//        if (genre.length in 8..)
-//            chip.maxWidth = 110
         else
             chip.maxWidth = 100
 //      chip.setEnsureMinTouchTargetSize(false)

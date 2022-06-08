@@ -90,9 +90,7 @@ class SearchActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionList
         }
     }
 
-    override fun onSearchStateChanged(enabled: Boolean) {
-        TODO("Not yet implemented")
-    }
+    override fun onSearchStateChanged(enabled: Boolean) {}
 
     override fun onSearchConfirmed(text: CharSequence?) {
         searchBook()

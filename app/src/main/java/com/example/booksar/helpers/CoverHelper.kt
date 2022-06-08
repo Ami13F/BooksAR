@@ -73,13 +73,10 @@ class CoverHelper {
             coverNode.parent = bookNode
             coverNode.renderable = viewRenderable
             resizeCover(coverNode, viewRenderable, bookNode)
-//            resizeCover2(coverNode, bookNode)
             coverNode.renderable = viewRenderable
             val root = (coverNode.renderable as ViewRenderable).view as FrameLayout
             root.findViewById<TextView>(R.id.author)?.text = book.author
             root.findViewById<TextView>(R.id.title)?.text = book.title
-//            root.findViewById<TextView>(R.id.title)?.setTextColor(book.cover.textColor)
-//            root.findViewById<TextView>(R.id.author)?.setTextColor(book.cover.textColor)
         }
 
         fun createCoverFromImage(
@@ -107,7 +104,6 @@ class CoverHelper {
                     }
 
                     override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                        TODO("Not yet implemented")
                     }
 
                     override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
@@ -121,7 +117,6 @@ class CoverHelper {
         ) {
             coverNode.renderable = viewRenderable
             val modelSize = (bookNode.collisionShape as Box).size
-            // TODO: don't hardcode
             coverNode.localPosition = Vector3(0.0f, -0.06f, 0.025f - modelSize.z / 2)
             coverNode.localScale = Vector3(0.275f, 0.22f, 0.1f)
             coverNode.localRotation = Quaternion.axisAngle(Vector3(0f, 0.0f, 0.0f), 0f)
