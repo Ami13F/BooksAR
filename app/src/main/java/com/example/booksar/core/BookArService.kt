@@ -2,6 +2,7 @@ package com.example.booksar.core
 
 import android.app.Activity
 import android.net.Uri
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent.ACTION_UP
@@ -16,7 +17,6 @@ import com.example.booksar.helpers.CoverHelper.Companion.createTemplateViewCover
 import com.example.booksar.helpers.ExceptionHelper.Companion.onException
 import com.example.booksar.models.Book
 import com.example.booksar.notion.BookRow
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.ar.core.Anchor
@@ -137,13 +137,9 @@ class BookArService(
                     stars.rating = bookRowNotion.reviewStartNumbers.toFloat()
                     Log.w("[ami]", "${bookRowNotion.genres?.size}")
                     Log.w("[ami]", "${summary.text} was here")
-                    val layoutParams = FlexboxLayout.LayoutParams(
-                        FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                        FlexboxLayout.LayoutParams.WRAP_CONTENT
-                    )
 
                     bookRowNotion.genres.forEach { genre ->
-                        createChip(chipGroup, layoutParams, genre ?: "")
+                        createChip(chipGroup, genre ?: "")
                     }
                 } else {
                     summary.text =
@@ -160,7 +156,7 @@ class BookArService(
     private fun b(
         it: BookRow,
         book: Book
-    ) : Boolean {
+    ): Boolean {
         it.title = it.title.removeDiacritics()
         book.title = book.title.removeDiacritics()
 
@@ -177,33 +173,43 @@ class BookArService(
 
     private fun createChip(
         chipGroup: ChipGroup,
-        layoutParams: FlexboxLayout.LayoutParams,
         genre: String
     ) {
-      if (genre.isEmpty()) return
-        val gen = Chip(chipGroup.context)
+        if (genre.isEmpty()) return
+        val chip = Chip(fragment.context)
+        chip.text = genre
+        chip.textSize = 7f
+        chip.gravity = (Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL)
+        chip.setPadding(0, 0, 0, 0)
+        chip.minimumHeight = 0
+        chip.chipMinHeight = 0f
+        chip.textStartPadding = 10f
+        chip.textEndPadding = 0f
+        chip.chipStartPadding = 0f
+        chip.chipEndPadding = 0f
+        chip.minWidth = 0
+        chip.minimumWidth = 0
+        chip.closeIcon = null
 
-//        gen.layoutParams = layoutParams
-        gen.text = genre
-        gen.textSize = 5f
-        gen.gravity = (Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL)
-        gen.setPadding(0, 0, 0, 0)
-        gen.chipStartPadding = 0f
-        gen.chipEndPadding = 0f
-        gen.setEnsureMinTouchTargetSize(false)
-        gen.textStartPadding = 10f
-        gen.textEndPadding = 0f
-        gen.chipMinHeight = 0f
-        gen.minHeight = 0
-        gen.minimumHeight = 0
-        gen.closeIconSize = 0f
-        gen.closeIconEndPadding = 0f
+        chip.closeIconStartPadding = 0f
+        chip.closeIconSize = 0f
+        chip.closeIconEndPadding = 0f
+        chip.iconStartPadding = 0f
+        chip.iconEndPadding = 0f
+        chip.chipIconSize = 0f
 
-        layoutParams.height = 80//ChipGroup.LayoutParams.WRAP_CONTENT
-        layoutParams.width =  genre.length * 10
-        gen.layoutParams = layoutParams
 
-        chipGroup.addView(gen)
+        if (genre.length > 12)
+            chip.maxWidth = 150
+        if (genre.length in 9..12)
+            chip.maxWidth = 130
+//        if (genre.length in 8..)
+//            chip.maxWidth = 110
+        else
+            chip.maxWidth = 100
+//      chip.setEnsureMinTouchTargetSize(false)
+        chip.ensureAccessibleTouchTarget(10) // sets the distance
+        chipGroup.addView(chip)
     }
 
 
